@@ -1,0 +1,14 @@
+{
+    "devices": [
+        {
+            "device_id": "06ddce1c9ecbd172d719dd42822c52b9e0b68bc0e9d63fac6bf6c30e06b371f3",
+            "notes": "Device 1",
+            "expiry_date": "2025-12-31"
+        },
+        {
+            "device_id": "fbd6de085d9d28dc687f564c7fdedd8d116bddf6e1725a65d7f9c9f6c66a9e1a",
+            "notes": "Device 2",
+            "expiry_date": "2026-01-15"
+        }
+    ]
+}
