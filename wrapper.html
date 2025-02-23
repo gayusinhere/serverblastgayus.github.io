@@ -1,0 +1,48 @@
+<!DOCTYPE html>  
+<html>  
+<head>  
+    <meta charset="UTF-8">  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">  
+    <style>  
+        body, html {  
+            margin: 0;  
+            padding: 0;  
+            width: 100%;  
+            height: 100%;  
+            overflow: hidden;  
+        }  
+        iframe {  
+            width: 100%;  
+            height: 100%;  
+            border: none;  
+            position: fixed;  
+            top: 0;  
+            left: 0;  
+            right: 0;  
+            bottom: 0;  
+        }  
+    </style>  
+</head>  
+<body>  
+    <iframe id="mainFrame" src="" allow="fullscreen"></iframe>  
+    <script>  
+        window.addEventListener('load', function() {  
+            const urlParams = new URLSearchParams(window.location.search);  
+            const targetUrl = urlParams.get('url');  
+            if (targetUrl) {  
+                document.getElementById('mainFrame').src = decodeURIComponent(targetUrl);  
+            }  
+        });  
+        
+        // Disable zoom on iOS  
+        document.addEventListener('gesturestart', function(e) {  
+            e.preventDefault();  
+        });  
+        
+        // Disable zoom on double tap  
+        document.addEventListener('dblclick', function(e) {  
+            e.preventDefault();  
+        });  
+    </script>  
+</body>  
+</html>  
