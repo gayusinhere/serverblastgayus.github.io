@@ -5,132 +5,58 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">  
     <title>Mobile View</title>  
     <style>  
-        /* Reset dasar */  
+        :root {  
+            --safe-area-top: env(safe-area-inset-top);  
+            --safe-area-bottom: env(safe-area-inset-bottom);  
+        }  
+
         * {  
             margin: 0;  
             padding: 0;  
             box-sizing: border-box;  
-            -webkit-tap-highlight-color: transparent;  
-            -webkit-touch-callout: none;  
-            -webkit-user-select: none;  
-            user-select: none;  
+            touch-action: manipulation;  
         }  
 
-        /* Fix untuk iOS */  
-        html {  
+        html, body {  
             position: fixed;  
             width: 100%;  
             height: 100%;  
             overflow: hidden;  
-        }  
-
-        body {  
-            width: 100%;  
-            height: 100%;  
-            overflow: hidden;  
-            position: fixed;  
-            top: 0;  
-            left: 0;  
-            right: 0;  
-            bottom: 0;  
-        }  
-
-        /* Container utama */  
-        #app-container {  
-            position: fixed;  
-            top: 0;  
-            left: 0;  
-            width: 100%;  
-            height: 100%;  
-            overflow: hidden;  
+            overscroll-behavior: none;  
             background: #fff;  
         }  
 
-        /* Frame styling */  
-        #mobile-frame {  
-            width: 100%;  
-            height: 100%;  
-            border: none;  
+        #app {  
             position: absolute;  
             top: 0;  
             left: 0;  
-            right: 0;  
-            bottom: 0;  
-            transform: translate3d(0,0,0);  
-            -webkit-transform: translate3d(0,0,0);  
+            width: 100%;  
+            height: 100%;  
+            overflow: hidden;  
         }  
 
-        /* Fix untuk notch devices */  
-        @supports (padding: max(0px)) {  
-            #app-container {  
-                padding-left: max(0px, env(safe-area-inset-left));  
-                padding-right: max(0px, env(safe-area-inset-right));  
-            }  
+        iframe {  
+            border: none;  
+            width: 100%;  
+            height: 100%;  
+            position: absolute;  
+            top: 0;  
+            left: 0;  
         }  
     </style>  
 </head>  
 <body>  
-    <div id="app-container">  
-        <iframe id="mobile-frame"></iframe>  
+    <div id="app">  
+        <iframe id="frame"></iframe>  
     </div>  
-
     <script>  
-        (function() {  
-            // Inisialisasi frame  
-            function initFrame() {  
-                const frame = document.getElementById('mobile-frame');  
-                const url = new URLSearchParams(window.location.search).get('url');  
-                
-                if (url) {  
-                    frame.src = decodeURIComponent(url);  
-                }  
-
-                // Inject CSS ke frame untuk fix scroll  
-                frame.addEventListener('load', function() {  
-                    try {  
-                        const frameDoc = frame.contentDocument || frame.contentWindow.document;  
-                        const style = frameDoc.createElement('style');  
-                        style.textContent = `  
-                            html, body {  
-                                overflow-x: hidden !important;  
-                                width: 100% !important;  
-                                position: relative !important;  
-                            }  
-                            * {  
-                                max-width: 100vw !important;  
-                            }  
-                        `;  
-                        frameDoc.head.appendChild(style);  
-                    } catch (e) {  
-                        console.warn('Cannot inject styles into iframe');  
-                    }  
-                });  
-            }  
-
-            // Prevent zoom  
-            document.addEventListener('touchmove', function(e) {  
-                if (e.touches.length > 1) e.preventDefault();  
-            }, { passive: false });  
-
-            // Prevent double tap zoom  
-            let lastTouchEnd = 0;  
-            document.addEventListener('touchend', function(e) {  
-                const now = Date.now();  
-                if (now - lastTouchEnd <= 300) {  
-                    e.preventDefault();  
-                }  
-                lastTouchEnd = now;  
-            }, { passive: false });  
-
-            // Handle orientasi  
-            window.addEventListener('orientationchange', function() {  
-                setTimeout(function() {  
-                    window.scrollTo(0, 0);  
-                }, 100);  
-            });  
-
-            // Init  
-            initFrame();  
+        (() => {  
+            const frame = document.getElementById('frame');  
+            const url = new URLSearchParams(location.search).get('url');  
+            if (url) frame.src = decodeURIComponent(url);  
+            
+            document.addEventListener('touchmove', e => e.touches.length > 1 && e.preventDefault(), {passive: false});  
+            window.addEventListener('orientationchange', () => setTimeout(() => window.scrollTo(0, 0), 50));  
         })();  
     </script>  
 </body>  
