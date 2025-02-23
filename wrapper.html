@@ -1,48 +1,113 @@
 <!DOCTYPE html>  
-<html>  
+<html lang="en">  
 <head>  
     <meta charset="UTF-8">  
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">  
+    <title>Target4D Wrapper</title>  
     <style>  
-        body, html {  
+        * {  
             margin: 0;  
             padding: 0;  
+            box-sizing: border-box;  
+            -webkit-tap-highlight-color: transparent;  
+        }  
+
+        html, body {  
             width: 100%;  
             height: 100%;  
             overflow: hidden;  
+            position: fixed;  
+            touch-action: none;  
+            -webkit-overflow-scrolling: touch;  
         }  
-        iframe {  
+
+        #container {  
+            width: 100vw;  
+            height: 100vh;  
+            position: fixed;  
+            top: 0;  
+            left: 0;  
+            overflow: hidden;  
+            background: #fff;  
+        }  
+
+        #mainFrame {  
             width: 100%;  
             height: 100%;  
             border: none;  
-            position: fixed;  
+            position: absolute;  
             top: 0;  
             left: 0;  
             right: 0;  
             bottom: 0;  
+            display: block;  
+            background: #fff;  
+        }  
+
+        /* Sembunyikan scrollbar untuk Chrome, Safari dan Opera */  
+        ::-webkit-scrollbar {  
+            display: none;  
+        }  
+
+        /* Sembunyikan scrollbar untuk IE, Edge dan Firefox */  
+        * {  
+            -ms-overflow-style: none;  /* IE dan Edge */  
+            scrollbar-width: none;  /* Firefox */  
         }  
     </style>  
 </head>  
 <body>  
-    <iframe id="mainFrame" src="" allow="fullscreen"></iframe>  
+    <div id="container">  
+        <iframe id="mainFrame" scrolling="no"></iframe>  
+    </div>  
+
     <script>  
-        window.addEventListener('load', function() {  
+        document.addEventListener('DOMContentLoaded', function() {  
+            // Dapatkan URL dari parameter  
             const urlParams = new URLSearchParams(window.location.search);  
             const targetUrl = urlParams.get('url');  
+            
             if (targetUrl) {  
-                document.getElementById('mainFrame').src = decodeURIComponent(targetUrl);  
+                const frame = document.getElementById('mainFrame');  
+                frame.src = decodeURIComponent(targetUrl);  
             }  
         });  
-        
-        // Disable zoom on iOS  
+
+        // Cegah semua gesture zoom  
+        document.addEventListener('touchstart', function(e) {  
+            if (e.touches.length > 1) {  
+                e.preventDefault();  
+            }  
+        }, { passive: false });  
+
+        document.addEventListener('touchmove', function(e) {  
+            if (e.touches.length > 1) {  
+                e.preventDefault();  
+            }  
+        }, { passive: false });  
+
+        // Cegah double tap zoom  
+        let lastTouchEnd = 0;  
+        document.addEventListener('touchend', function(e) {  
+            const now = Date.now();  
+            if (now - lastTouchEnd < 300) {  
+                e.preventDefault();  
+            }  
+            lastTouchEnd = now;  
+        }, { passive: false });  
+
+        // Cegah pinch zoom  
         document.addEventListener('gesturestart', function(e) {  
             e.preventDefault();  
         });  
-        
-        // Disable zoom on double tap  
-        document.addEventListener('dblclick', function(e) {  
+
+        document.addEventListener('gesturechange', function(e) {  
+            e.preventDefault();  
+        });  
+
+        document.addEventListener('gestureend', function(e) {  
             e.preventDefault();  
         });  
     </script>  
 </body>  
-</html>  
+</html>
